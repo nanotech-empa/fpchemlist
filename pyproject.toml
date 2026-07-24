@@ -1,0 +1,41 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "fpchemlist"
+
+[project]
+name = "fpchemlist"
+dynamic = ["version", "description"]
+authors = [
+    {name = "Nils Krane", email = "nils.krane@empa.ch"}
+]
+readme = "README.md"
+license = {file = 'LICENSE'}
+requires-python = ">=3.10"
+
+dependencies = [
+    "rdkit>=2025.9.5",
+]
+
+[project.optional-dependencies]
+dev = [
+  "bumpver==2023.1129",
+  "pre-commit==3.6.0",
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+]
+
+[project.scripts]
+[tool.bumpver]
+current_version = "v0.0.1"
+version_pattern = "vMAJOR.MINOR.PATCH[PYTAGNUM]"
+commit_message = "Bump version {old_version} -> {new_version}."
+tag_message = "Release {new_version}."
+tag_scope = "default"
+pre_commit_hook = ""
+post_commit_hook = ""
+commit = true
+tag = true
+push = true
