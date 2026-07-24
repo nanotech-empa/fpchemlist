@@ -1,5 +1,5 @@
 from rdkit.Chem import CombineMols
-from rdkit.Chem.Draw import rdMolDraw2D
+from rdkit.Chem.Draw import rdMolDraw2D  # type: ignore
 from PIL import Image, ImageDraw, ImageFont
 import io
 

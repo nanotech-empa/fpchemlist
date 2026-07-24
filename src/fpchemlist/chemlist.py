@@ -9,7 +9,7 @@ from pathlib import Path
 import os
 import pickle
 from rdkit.DataStructs import DiceSimilarity
-from rdkit.Chem.AllChem import GetMorganGenerator
+from rdkit.Chem.rdFingerprintGenerator import GetMorganGenerator
 from rdkit.Chem.rdchem import Mol
 
 
@@ -215,4 +215,5 @@ class Chemlist:
 
         if not top_substances:
             return (), ()
-        return tuple(zip(*top_substances))
+        mols, legends = tuple(zip(*top_substances))
+        return mols, legends

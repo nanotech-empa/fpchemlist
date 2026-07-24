@@ -13,7 +13,7 @@ import os
 
 
 class Substance:
-    def __init__(self, name: str, molecule: str | Path | Mol):
+    def __init__(self, name: str, molecule: str | Path | list[Mol]):
         self._fp_cache = {}
         self.name = name
         self.mols = self._parse_input(molecule)
@@ -30,7 +30,7 @@ class Substance:
         self._name = name
 
     @property
-    def mols(self) -> list[Mol]:
+    def mols(self) -> tuple[Mol]:
         return self._mols
 
     @mols.setter
@@ -43,7 +43,7 @@ class Substance:
         mols = MolsFromCDXMLFile(filename)
         return mols
 
-    def _parse_input(self, input: str | Path) -> Mol:
+    def _parse_input(self, input: str | Path | list) -> Mol:
         mols = None
 
         if isinstance(input, list):

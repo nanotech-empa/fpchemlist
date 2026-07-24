@@ -8,7 +8,7 @@ class SubstanceParseError(ValueError):
     """Raised when a Substance's input (SMILES, file, etc.) could not be parsed."""
 
 
-def require_type(value: object, expected: type, name="value"):
+def require_type(value, expected: type, name="value"):
     if not isinstance(value, expected):
         types = expected if isinstance(expected, tuple) else (expected,)
         want = " or ".join(t.__name__ for t in types)
@@ -16,7 +16,7 @@ def require_type(value: object, expected: type, name="value"):
     return value
 
 
-def require_path(value: Path, name: str = "value") -> Path:
+def require_path(value, name: str = "value") -> Path:
     try:
         Path(value)
     except TypeError:
