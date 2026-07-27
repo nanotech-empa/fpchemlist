@@ -132,6 +132,6 @@ def mols_to_grid(
         text_w = bbox[2] - bbox[0]
         text_x = x + (tile_size[0] - text_w) // 2
         text_y = y + tile_size[1] + (legend_height - (bbox[3] - bbox[1])) // 2
-        draw.text((text_x, text_y), legend, fill="black", fsont=font)
+        draw.text((text_x, text_y), legend, fill="black", font=font)
 
     return grid_img
