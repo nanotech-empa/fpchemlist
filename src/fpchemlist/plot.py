@@ -35,7 +35,7 @@ def combine_mols(mols: tuple[Mol, ...]) -> Mol:
         return CombineMols(*mols)
 
 
-def draw_single(mol, size=(250, 250)):
+def draw_single(mol, size=(150, 150)):
     """Render a single `Mol` to a 2D image, auto-fit to the canvas.
 
     Parameters
@@ -59,11 +59,11 @@ def draw_single(mol, size=(250, 250)):
 def mols_to_grid(
     mols,
     mols_per_row=6,
-    tile_size=(250, 250),
+    tile_size=(150, 150),
     legends=None,
     legend_height=25,
     font_size=20,
-    padding=15,
+    padding=30,
     outer_margin=15,
 ):
     """Compose a list of structures into a single labeled grid image.

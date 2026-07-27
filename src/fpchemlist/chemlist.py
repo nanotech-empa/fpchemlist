@@ -16,7 +16,7 @@ from rdkit.Chem.rdFingerprintGenerator import GetMorganGenerator
 from rdkit.Chem.rdchem import Mol
 
 
-def validate_substancesdict(substances, name="substances"):
+def _validate_substancesdict(substances, name="substances"):
     """Assert that a value is a dict mapping names to `Substance` objects.
 
     Parameters
@@ -89,8 +89,8 @@ class Chemlist:
         return self._substances
 
     @substances.setter
-    def substances(self, substances):
-        validate_substancesdict(substances)
+    def substances(self, substances: dict):
+        _validate_substancesdict(substances)
         self._substances = dict(
             substances
         )  # copy, so the caller mutating their dict later doesn't affect us
@@ -101,7 +101,7 @@ class Chemlist:
         return self._bond_types
 
     @bond_types.setter
-    def bond_types(self, bond_types):
+    def bond_types(self, bond_types: bool):
         require_type(bond_types, bool, "bond_types")
         self._bond_types = bond_types
         self._fpgen_cache = {}  # radius/bond_types changed -> invalidate cached generator
@@ -112,7 +112,7 @@ class Chemlist:
         return self._radius
 
     @radius.setter
-    def radius(self, radius):
+    def radius(self, radius: int):
         require_type(radius, int, "radius")
         if radius <= 0:
             raise ValueError(f"radius must be positive, but got {radius}.")
@@ -176,7 +176,7 @@ class Chemlist:
     # input parsing and updating
     # --------------------------------------------
 
-    def _load_input(self, input) -> dict:
+    def _load_input(self, input: str | Path | dict | None) -> dict:
         """Resolve the constructor/update `input` into a substances dict.
 
         Parameters

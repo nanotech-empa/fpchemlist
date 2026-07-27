@@ -42,7 +42,7 @@ class Substance:
         If `molecule` could not be parsed into at least one valid `Mol`.
     """
 
-    def __init__(self, name: str, molecule: str | Path | tuple[Mol]):
+    def __init__(self, name: str, molecule: str | Path | tuple[Mol, ...]):
         self._fp_cache = {}
         self.name = name
         self.mols = self._parse_input(molecule)  # type: ignore
@@ -150,7 +150,9 @@ class Substance:
         return self._fp_cache[cache_key]
 
     # definition of different invariants to be used for fingerprinting
-    def get_invariants(self, config: InvariantConfig = InvariantConfig()) -> list[int]:
+    def get_invariants(
+        self, config: InvariantConfig = InvariantConfig()
+    ) -> list[list[int]]:
         """Compute per-atom custom invariants for each structure in this substance.
 
         Parameters

@@ -10,7 +10,7 @@ class SubstanceParseError(ValueError):
     """Raised when a Substance's input (SMILES, file, etc.) could not be parsed."""
 
 
-def require_type(value, expected: type, name="value"):
+def require_type(value, expected: type | tuple[type, ...], name="value"):
     """Assert that a value is an instance of the expected type(s).
 
     Parameters
@@ -39,7 +39,7 @@ def require_type(value, expected: type, name="value"):
     return value
 
 
-def require_path(value, name: str = "value") -> Path:  # type: ignore
+def require_path(value, name: str = "value") -> Path:
     """Coerce a value into a `Path`, raising a clear error if it can't be.
 
     Parameters
@@ -64,8 +64,7 @@ def require_path(value, name: str = "value") -> Path:  # type: ignore
         Path(value)
     except TypeError:
         require_type(value, Path, name)
-    else:
-        return Path(value)
+    return Path(value)
 
 
 def validate_tuple_of_mol(value, name="mols") -> tuple[Mol, ...]:
@@ -94,13 +93,18 @@ def validate_tuple_of_mol(value, name="mols") -> tuple[Mol, ...]:
     return value
 
 
-def validate_fpgen(fpgen):
+def validate_fpgen(fpgen) -> FingerprintGenerator64:
     """Assert that a value is an RDKit fingerprint generator.
 
     Parameters
     ----------
     fpgen : object
         The value to check.
+
+    Returns
+    -------
+    fpgen : FingerprintGenerator64
+        fpgen, unchanged, if the check passes.
 
     Raises
     ------
@@ -112,6 +116,7 @@ def validate_fpgen(fpgen):
             f"fpgen must be type FingerprintGenerator64 "
             f"but got type {type(fpgen).__name__}."
         )
+    return fpgen
 
 
 @dataclass(frozen=True)
