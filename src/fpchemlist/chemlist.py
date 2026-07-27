@@ -116,8 +116,11 @@ class Chemlist:
         if self.substances is None or len(self.substances) == 0:
             raise ValueError("No molecules found to pickle.")
         file_path = require_path(file_path, "file_path")
+        substances = dict(self.substances)
+        for substance in substances.values():
+            substance._fp_cache = {}
         with open(file_path, "wb") as jar:
-            pickle.dump(self.substances, jar, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(substances, jar, protocol=pickle.HIGHEST_PROTOCOL)
 
     @staticmethod
     def _load_from_dir(dirpath: str | Path) -> dict:
@@ -144,7 +147,7 @@ class Chemlist:
         new_substances = self._load_input(input)
         n_new = len(set(new_substances) - set(self.substances))
         plural = "s" if n_new != 1 else ""
-        print(f"{n_new} new substances{plural} found.")
+        print(f"{n_new} new substance{plural} found.")
         if overwrite:
             self.substances = self.substances | new_substances
         else:
@@ -185,8 +188,9 @@ class Chemlist:
         similarity_list = []
         for substance in self.substances.values():
             substances_fp = substance.fingerprint(fpgen, config)
-            coeff = max([DiceSimilarity(fp, ref_fp) for fp in substances_fp])
-            similarity_list.append((coeff, substance))
+            if len(substances_fp) > 0:
+                coeff = max([DiceSimilarity(fp, ref_fp) for fp in substances_fp])
+                similarity_list.append((coeff, substance))
 
         return similarity_list
 

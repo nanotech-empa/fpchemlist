@@ -13,10 +13,10 @@ import os
 
 
 class Substance:
-    def __init__(self, name: str, molecule: str | Path | list[Mol]):
+    def __init__(self, name: str, molecule: str | Path | tuple[Mol]):
         self._fp_cache = {}
         self.name = name
-        self.mols = self._parse_input(molecule)
+        self.mols = self._parse_input(molecule)  # type: ignore
 
     @property
     def name(self) -> str:
@@ -30,34 +30,33 @@ class Substance:
         self._name = name
 
     @property
-    def mols(self) -> tuple[Mol]:
+    def mols(self) -> tuple[Mol, ...]:
         return self._mols
 
     @mols.setter
-    def mols(self, mols: list[Mol]):
+    def mols(self, mols: tuple[Mol, ...]):
         self._mols = validate_tuple_of_mol(mols)
         self._fp_cache = {}  # (fpgen, InvariantConfig) -> fingerprint; reset whenever mol changes
 
-    @staticmethod
-    def _parse_from_cdxml(filename) -> Mol | None:
-        mols = MolsFromCDXMLFile(filename)
-        return mols
+    def _parse_input(self, input: str | Path | tuple[Mol, ...]) -> tuple[Mol, ...]:
+        mols = ()
 
-    def _parse_input(self, input: str | Path | list) -> Mol:
-        mols = None
-
-        if isinstance(input, list):
+        if isinstance(input, tuple):
             mols = validate_tuple_of_mol(input, name="input")
-        elif isinstance(input, Path | str) and os.path.isfile(input):
-            mols = self._parse_from_cdxml(input)
+        elif isinstance(input, (Path, str)) and os.path.isfile(input):
+            mols = tuple(MolsFromCDXMLFile(str(input)))
         elif isinstance(input, str):
             mols = tuple([MolFromSmiles(substr) for substr in input.split(".")])
+            try:
+                validate_tuple_of_mol(mols)
+            except TypeError:
+                mols = ()
         else:
             raise TypeError(
-                f"molecule must be type list[Mol], Path or str, but got {type(input).__name__}"
+                f"molecule must be type [Mol], Path or str, but got {type(input).__name__}"
             )
 
-        if mols is None:
+        if len(mols) == 0:
             raise SubstanceParseError(f"Substance '{self.name}' could not be parsed.")
 
         return mols
