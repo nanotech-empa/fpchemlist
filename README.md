@@ -58,3 +58,22 @@ The search results can be displayed visually by calling
 grid_img = fpc.mols_to_grid(similar_mols, mols_per_row=6, legends=legends)
 grid_img  # a PIL Image, displayed automatically in a Jupyter notebook
 ```
+
+### Fingerprint Generator
+By default, ``rdkit.Chem.rdFingerprintGenerator.GetMorganGenerator`` is used to create the chemical fingerprints, with ``radius=3`` and ``useBondTypes=False``.
+These two settings can be set when instantiating the ``Chemlist`` object, or changed afterwards via the corresponding attributes:
+```python
+collection = fpc.Chemlist(input, radius=2, bond_types=True)
+# or
+collection = fpc.Chemlist(input)
+collection.radius = 2
+collection.bond_types = True
+```
+Note: the ``Chemlist`` attribute is named ``bond_types``, while the underlying RDKit generator parameter it maps to is called ``useBondTypes``.
+
+In addition, any instance of ``rdkit.Chem.rdFingerprintGenerator.FingerprintGenerator64`` can be used as the fingerprint generator, for example:
+```python
+from rdkit.Chem.AllChem import GetRDKitFPGenerator
+my_fpgen = GetRDKitFPGenerator(minPath=1, maxPath=5)
+similar_mols, legends = collection.find_closest(reference, n, fpgen=my_fpgen)
+```
